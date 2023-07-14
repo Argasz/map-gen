@@ -1,0 +1,50 @@
+{ "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "format":"json"
+        }
+    },
+ "height":8,
+ "infinite":false,
+ "layers":[
+        {
+         "data":[25, 26, 26, 26, 26, 27, 30, 30,
+            33, 34, 34, 34, 34, 35, 30, 30,
+            33, 34, 36, 37, 34, 35, 30, 30,
+            33, 34, 35, 33, 34, 44, 26, 26,
+            33, 34, 35, 33, 34, 34, 34, 34,
+            33, 34, 35, 41, 42, 42, 42, 42,
+            33, 34, 35, 30, 30, 30, 30, 30,
+            33, 34, 35, 30, 30, 30, 30, 30],
+         "height":8,
+         "id":1,
+         "name":"Tile Layer 1",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":8,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":2,
+ "nextobjectid":1,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.10.1",
+ "tileheight":32,
+ "tilesets":[
+        {
+         "firstgid":1,
+         "source":"..\/..\/..\/..\/Documents\/MakeGame\/Map\/desert.json"
+        }, 
+        {
+         "firstgid":49,
+         "source":"..\/..\/..\/..\/..\/..\/Program Files\/Tiled\/examples\/desert.tsx"
+        }],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.10",
+ "width":8
+}

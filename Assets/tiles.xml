@@ -1,0 +1,32 @@
+<set>
+  <tiles>
+<tile name="Assets/Prefabs/Floor1" symmetry="X" weight="1.0"/>
+<tile name="Assets/Prefabs/Wall1" symmetry="X" weight="1.0"/>
+<tile name="Assets/Prefabs/Floor2" symmetry="X" weight="1.0"/>
+<tile name="Assets/Prefabs/Floor3" symmetry="X" weight="1.0"/>
+<tile name="Assets/Prefabs/OuterWall1" symmetry="X" weight="1.0"/>
+	</tiles>
+<neighbors>  <neighbor left="Assets/Prefabs/Floor1 0" right="Assets/Prefabs/Floor1 0"/>
+  <neighbor left="Assets/Prefabs/Floor1 1" right="Assets/Prefabs/Floor2 1"/>
+  <neighbor left="Assets/Prefabs/Floor1 0" right="Assets/Prefabs/Wall1 0"/>
+  <neighbor left="Assets/Prefabs/Wall1 0" right="Assets/Prefabs/OuterWall1 0"/>
+  <neighbor left="Assets/Prefabs/Wall1 1" right="Assets/Prefabs/Wall1 1"/>
+  <neighbor left="Assets/Prefabs/OuterWall1 0" right="Assets/Prefabs/OuterWall1 0"/>
+  <neighbor left="Assets/Prefabs/OuterWall1 1" right="Assets/Prefabs/Wall1 1"/>
+  <neighbor left="Assets/Prefabs/OuterWall1 1" right="Assets/Prefabs/OuterWall1 1"/>
+  <neighbor left="Assets/Prefabs/Floor2 0" right="Assets/Prefabs/Floor2 0"/>
+  <neighbor left="Assets/Prefabs/Floor2 1" right="Assets/Prefabs/Floor3 1"/>
+  <neighbor left="Assets/Prefabs/Floor2 0" right="Assets/Prefabs/Wall1 0"/>
+  <neighbor left="Assets/Prefabs/Wall1 0" right="Assets/Prefabs/Wall1 0"/>
+  <neighbor left="Assets/Prefabs/Wall1 1" right="Assets/Prefabs/Floor1 1"/>
+  <neighbor left="Assets/Prefabs/OuterWall1 1" right="Assets/Prefabs/Floor1 1"/>
+  <neighbor left="Assets/Prefabs/Floor3 0" right="Assets/Prefabs/Floor3 0"/>
+  <neighbor left="Assets/Prefabs/Floor3 1" right="Assets/Prefabs/Floor1 1"/>
+  <neighbor left="Assets/Prefabs/Floor3 0" right="Assets/Prefabs/Floor1 0"/>
+  <neighbor left="Assets/Prefabs/Floor1 1" right="Assets/Prefabs/Wall1 1"/>
+  <neighbor left="Assets/Prefabs/Floor1 1" right="Assets/Prefabs/Floor1 1"/>
+  <neighbor left="Assets/Prefabs/Wall1 0" right="Assets/Prefabs/Floor1 0"/>
+  <neighbor left="Assets/Prefabs/Wall1 1" right="Assets/Prefabs/OuterWall1 1"/>
+  <neighbor left="Assets/Prefabs/OuterWall1 0" right="Assets/Prefabs/Wall1 0"/>
+	</neighbors>
+</set>
