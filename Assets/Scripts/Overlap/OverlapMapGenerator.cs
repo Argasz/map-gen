@@ -10,37 +10,90 @@ namespace Assets.Scripts.Overlap
     public class OverlapMapGenerator
     {
         private IntervalHeap<SquareTile> ChangedTiles;
-        private Dictionary<int, int> FrequencyMap;
-        private Dictionary<int, string> ColorMap;
+        private int[] FrequencyMap;
+        private string[] ColorMap;
 
 
         public OverlapMapGenerator()
         {
-            FrequencyMap = new Dictionary<int, int>();
-            ColorMap = new Dictionary<int, string>();
         }
 
         public List<List<SquareTile>> Generate(Dictionary<int, SquareTileRule> rules, int dimx, int dimy)
         {
+            FrequencyMap = new int[rules.Count];
+            ColorMap = new string[rules.Count];
             var map = new List<List<SquareTile>>(new List<SquareTile>[dimx]);
             ChangedTiles = new IntervalHeap<SquareTile>();
             Initialize(rules, dimx, dimy, map);
+            var removals = new Stack<TileRemoval>();
             while (ChangedTiles.Count > 0)
             {
                 var tile = ChangedTiles.DeleteMin();
                 if (!tile.Collapsed)
                 {
-                    tile.Collapse(ColorMap);
-                    Propagate(rules, tile);
+                    tile.Collapse(ColorMap, removals);
+                    PropagateEnablers(map, rules, removals);
                 }
             }
             return map;
         }
 
-        private void PropagateWithRemovals()
+        private void PropagateEnablers(List<List<SquareTile>> map, Dictionary<int, SquareTileRule> rules, Stack<TileRemoval> removals)
         {
-
+            while (removals.Count > 0)
+            {
+                var removal = removals.Pop();
+                var cell = map[removal.coordX][removal.coordY];
+                foreach (int i in Enum.GetValues(typeof(CardinalDirection)))
+                {
+                    var neighbor = cell.AdjacentTiles[i];
+                    if (neighbor != null && !neighbor.Collapsed)
+                    {
+                        var changed = false;
+                        foreach (var tileIdx in rules[removal.tileIdx].allowedTilesByDirection[i])
+                        {
+                            var enablerCount = neighbor.enablerCounts[tileIdx];
+                            var oppositeDirection = OppositeDirection(i);
+                            if (enablerCount.ByDirection[oppositeDirection] == 1)
+                            {
+                                changed = true;
+                                if (!enablerCount.ByDirection.Any(x => x == 0))
+                                {
+                                    neighbor.LegalTiles.RemoveAll(x => x == tileIdx);
+                                    if(neighbor.LegalTiles.Count == 1)
+                                    {
+                                        neighbor.Collapsed = true;
+                                        neighbor.SelectedTile = ColorMap[neighbor.LegalTiles.First()];
+                                    }
+                                    else if (neighbor.LegalTiles.Count == 0)
+                                    {
+                                        throw new Exception("Contradiction");
+                                    }
+                                    removals.Push(new TileRemoval(tileIdx, neighbor.coordX, neighbor.coordY));
+                                    
+                                }
+                            }else if(enablerCount.ByDirection[oppositeDirection] == 0)
+                            {
+                                continue;
+                            }
+                            
+                            enablerCount.ByDirection[oppositeDirection] -= 1;
+                        }
+                        if (changed)
+                        {
+                            neighbor.UpdateEntropy(FrequencyMap);
+                            ChangedTiles.Add((SquareTile)neighbor);
+                        }
+                    }
+                }
+            }
         }
+
+        private int OppositeDirection(int i)
+        {
+            return (i + 2) % 4;
+        }
+
 
         private void Propagate(Dictionary<int, SquareTileRule> rules, SquareTile tile)
         {
@@ -52,7 +105,7 @@ namespace Assets.Scripts.Overlap
                 var northTile = tile.AdjacentTiles.ElementAtOrDefault((int)CardinalDirection.NORTH);
                 var eastTile = tile.AdjacentTiles.ElementAtOrDefault((int)CardinalDirection.EAST);
                 var southTile = tile.AdjacentTiles.ElementAtOrDefault((int)CardinalDirection.SOUTH);
-                var removed = tile.LegalTiles.RemoveWhere(x =>
+                var removed = tile.LegalTiles.RemoveAll(x =>
                 {
                     var thisRule = rules[x];
                     var westCompatible = westTile == null || thisRule.WestPermitted.Overlaps(westTile.LegalTiles);
@@ -94,10 +147,20 @@ namespace Assets.Scripts.Overlap
 
         private void Initialize(Dictionary<int, SquareTileRule> rules, int dimx, int dimy, List<List<SquareTile>> map)
         {
+            var initialEnablerCounts = new EnablerCount[rules.Count];
             foreach (var rule in rules.Values)
             {
-                FrequencyMap.Add(rule.tileIdx, rule.frequency);
-                ColorMap.Add(rule.tileIdx, rule.name);
+                FrequencyMap[rule.tileIdx] = rule.frequency;
+                ColorMap[rule.tileIdx] = rule.name;
+
+                var enablerCount = new EnablerCount(4);
+
+                foreach (int i in Enum.GetValues(typeof(CardinalDirection)))
+                {
+                    var count = rule.allowedTilesByDirection[i].Count;
+                    enablerCount.ByDirection[i] = count;
+                }
+                initialEnablerCounts[rule.tileIdx] = enablerCount;
             }
 
             for (int x = 0; x < dimx; x++)
@@ -106,7 +169,14 @@ namespace Assets.Scripts.Overlap
                 for (int y = 0; y < dimy; y++)
                 {
                     var tile = new SquareTile(rules.Count);
-                    tile.LegalTiles = new System.Collections.Generic.HashSet<int>(rules.Values.Select(x => x.tileIdx));
+                    tile.coordX = x;
+                    tile.coordY = y;
+                    tile.enablerCounts = initialEnablerCounts.Select(x => {
+                        var theCount = new EnablerCount(4);
+                        x.ByDirection.CopyTo(theCount.ByDirection, 0);
+                        return theCount;
+                        }).ToArray();
+                    tile.LegalTiles = rules.Values.Select(x => x.tileIdx).ToList();
                     tile.UpdateEntropy(FrequencyMap);
                     if (y > 0)
                     {

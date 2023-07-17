@@ -124,18 +124,22 @@ namespace Assets.Scripts.Overlap
 
                     if (Compatible(tile, otherTile, CardinalDirection.WEST))
                     {
+                        rule.allowedTilesByDirection[(int)CardinalDirection.WEST].Add(k);
                         rule.WestPermitted.Add(k);
                     }
                     if (Compatible(tile, otherTile, CardinalDirection.NORTH))
                     {
+                        rule.allowedTilesByDirection[(int)CardinalDirection.NORTH].Add(k);
                         rule.NorthPermitted.Add(k);
                     }
                     if (Compatible(tile, otherTile, CardinalDirection.EAST))
                     {
+                        rule.allowedTilesByDirection[(int)CardinalDirection.EAST].Add(k);
                         rule.EastPermitted.Add(k);
                     }
                     if (Compatible(tile, otherTile, CardinalDirection.SOUTH))
                     {
+                        rule.allowedTilesByDirection[(int)CardinalDirection.SOUTH].Add(k);
                         rule.SouthPermitted.Add(k);
                     }
                 }

@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Assets.Scripts.Overlap
 {
-    public struct EnablerCount
+    public class EnablerCount
     {
         public EnablerCount(int numberOfDirections)
         {
             ByDirection = new int[numberOfDirections];
         }
-        private int[] ByDirection;
+        public int[] ByDirection;
 
         public void SetCountByDirection(int direction, int count)
         {
