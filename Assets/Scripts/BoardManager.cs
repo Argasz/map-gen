@@ -99,6 +99,7 @@ public class BoardManager : MonoBehaviour
 
                     }
                 }
+                UnityEngine.Debug.Log("Tries:" + (10 - retries));
                 break;
             }
             catch (Exception e)

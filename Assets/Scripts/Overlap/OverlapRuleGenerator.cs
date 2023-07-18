@@ -8,7 +8,7 @@ namespace Assets.Scripts.Overlap
 {
     public static class OverlapRuleGenerator
     {
-        public static Dictionary<int, SquareTileRule> Generate(List<List<SampleTile>> sampleMap, int dimx, int dimy, bool includeRotations = false, bool includeReflections = false)
+        public static SquareTileRule[] Generate(List<List<SampleTile>> sampleMap, int dimx, int dimy, bool includeRotations = false, bool includeReflections = false)
         {
             var overlapTileMap = GenerateOverlapTileMap(sampleMap, dimx, dimy, includeRotations, includeReflections);
             return GenerateAdjacencyRules(overlapTileMap);
@@ -101,9 +101,9 @@ namespace Assets.Scripts.Overlap
             }
         }
 
-        private static Dictionary<int, SquareTileRule> GenerateAdjacencyRules(List<OverlapTile> overlapTileMap)
+        private static SquareTileRule[] GenerateAdjacencyRules(List<OverlapTile> overlapTileMap)
         {
-            var rules = new Dictionary<int, SquareTileRule>();
+            var rules = new SquareTileRule[overlapTileMap.Count];
 
             for (int i = 0; i < overlapTileMap.Count; i++)
             {
@@ -112,14 +112,14 @@ namespace Assets.Scripts.Overlap
                 {
                     var otherTile = overlapTileMap[k];
                     var tileName = tile.TileGrid[0][0];
-                    SquareTileRule rule;
-                    if (!rules.TryGetValue(i, out rule))
+                    SquareTileRule rule = rules.ElementAtOrDefault(i);
+                    if (rule == null)
                     {
                         rule = new SquareTileRule();
                         rule.name = tileName;
                         rule.frequency = tile.frequency;
                         rule.tileIdx = i;
-                        rules.Add(i, rule);
+                        rules[i] = rule;
                     }
 
                     if (Compatible(tile, otherTile, CardinalDirection.WEST))
