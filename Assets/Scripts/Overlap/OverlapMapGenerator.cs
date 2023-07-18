@@ -44,7 +44,7 @@ namespace Assets.Scripts.Overlap
             {
                 var removal = removals.Pop();
                 var cell = map[removal.coordX][removal.coordY];
-                foreach (int i in Enum.GetValues(typeof(CardinalDirection)))
+                for(int i = 0; i < 4; i++)
                 {
                     var neighbor = cell.AdjacentTiles[i];
                     if (neighbor != null && !neighbor.Collapsed)
@@ -59,7 +59,7 @@ namespace Assets.Scripts.Overlap
                                 if (!enablerCount.ByDirection.Any(x => x == 0))
                                 {
                                     neighbor.RemovePossibleTile(tileIdx, removals, FrequencyMap);
-                                    if (neighbor.LegalTilesCount == 1)
+                                    if (neighbor.LegalTilesCount == 1 && !neighbor.Collapsed)
                                     {
                                         neighbor.Collapsed = true;
                                         var selectedTileIdx = neighbor.LegalTiles.Select((item, idx) => (item, idx)).First(x => x.item).idx;
@@ -82,7 +82,7 @@ namespace Assets.Scripts.Overlap
                             
                             enablerCount.ByDirection[oppositeDirection]--;
                         }
-                        if (changed)
+                        if (changed && !neighbor.Collapsed)
                         {
                             neighbor.UpdateEntropy();
                             ChangedTiles.Add((SquareTile)neighbor);
@@ -158,7 +158,7 @@ namespace Assets.Scripts.Overlap
 
                 var enablerCount = new EnablerCount(4);
 
-                foreach (int i in Enum.GetValues(typeof(CardinalDirection)))
+                for(int i = 0; i < 4; i++)
                 {
                     var count = rule.allowedTilesByDirection[i].Count;
                     enablerCount.ByDirection[i] = count;
