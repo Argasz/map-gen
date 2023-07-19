@@ -19,11 +19,11 @@ namespace Assets.Scripts.Overlap
         public int coordX;
         public int coordY;
         public int LegalTilesCount;
-        public float sumOfPossibleTileWeights;
+        public int sumOfPossibleTileWeights;
         public float sumOfPossibleTileWeightsLog;
 
         public abstract void UpdateEntropy();
-        public abstract void Collapse(string[] colorMap, Stack<TileRemoval> removals);
+        public abstract void Collapse(string[] colorMap, int[] frequencyMap, Stack<TileRemoval> removals);
         public abstract void RemovePossibleTile(int tileIdx, Stack<TileRemoval> removals, int[] frequencies);
         public abstract void InitializeEntropy(int[] frequencies);
 

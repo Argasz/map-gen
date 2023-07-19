@@ -61,8 +61,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9adba3b00e2b0d44c91ce413b52dd38f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  columns: 128
-  rows: 128
+  columns: 64
+  rows: 64
   wallCount:
     minimum: 5
     maximum: 9
@@ -150,5 +150,5 @@ MonoBehaviour:
   - {fileID: 7564995575406434205, guid: 503445499510f944ea0aba53cc7172a5, type: 3}
   - {fileID: 8232312450416610351, guid: ee61f5c2a2683a245a343184d0bda532, type: 3}
   - {fileID: 834286736341335882, guid: a6630044eb2c4684787d88b55411f4d3, type: 3}
-  SampleName: SingleRoom
+  SampleName: waves
   TilesetName: Scavengers

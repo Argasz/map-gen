@@ -18,22 +18,35 @@ namespace Assets.Scripts.Overlap
             LegalTiles = new bool[numberOfTiles];
         }
 
-        public override void Collapse(string[] colorMap, Stack<TileRemoval> removals)
+        public override void Collapse(string[] colorMap, int[] frequencyMap, Stack<TileRemoval> removals)
         {
             Collapsed = true;
-            var remainingLegal = LegalTiles.Select((item, index) => (item, index)).Where(x => x.item).Select(x => x.index).ToList();
-            var random = Random.Range(0, remainingLegal.Count);
-            var tile = remainingLegal.ElementAt(random);
-            for(int i = 0; i < remainingLegal.Count; i++)
+            var remainingWeight = Random.Range(0, sumOfPossibleTileWeights);
+            int selectedTile = -1;
+
+            for(int i = 0; i < LegalTiles.Length; i++)
             {
-                if (remainingLegal[i] != tile)
+                if(LegalTiles[i] == true)
                 {
-                    removals.Push(new TileRemoval(remainingLegal[i], coordX, coordY));
-                    LegalTiles[remainingLegal[i]] = false;
+                    if (selectedTile == -1)
+                    {
+                        var weight = frequencyMap[i];
+                        if (remainingWeight >= weight)
+                        {
+                            remainingWeight -= weight;
+                        }
+                        else
+                        {
+                            selectedTile = i;
+                            continue; // Skip creating removal for selected tile
+                        }
+                    }
+                    removals.Push(new TileRemoval(i, coordX, coordY));
+                    LegalTiles[i] = false;
                 }
             }
             LegalTilesCount = 1;
-            SelectedTile = colorMap[tile];
+            SelectedTile = colorMap[selectedTile];
         }
 
         public override void InitializeEntropy(int[] frequencies)

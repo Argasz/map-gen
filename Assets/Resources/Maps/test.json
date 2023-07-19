@@ -1,23 +1,18 @@
 { "compressionlevel":-1,
- "height":8,
+ "height":3,
  "infinite":false,
  "layers":[
         {
-         "data":[52, 52, 52, 52, 52, 52, 52, 52,
-            52, 52, 52, 52, 33, 33, 33, 52,
-            52, 33, 33, 52, 33, 33, 33, 52,
-            52, 33, 33, 52, 33, 52, 52, 52,
-            52, 33, 33, 33, 33, 33, 33, 52,
-            52, 52, 52, 33, 52, 33, 33, 52,
-            52, 33, 33, 33, 52, 33, 33, 52,
-            52, 33, 33, 33, 52, 52, 52, 52],
-         "height":8,
+         "data":[85, 85, 85,
+            77, 85, 85,
+            85, 85, 77],
+         "height":3,
          "id":1,
          "name":"Tile Layer 1",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
-         "width":8,
+         "width":3,
          "x":0,
          "y":0
         }],
@@ -31,9 +26,13 @@
         {
          "firstgid":1,
          "source":"Scavengers.tsj"
+        }, 
+        {
+         "firstgid":53,
+         "source":"..\/..\/..\/..\/Documents\/MakeGame\/Map\/Scavengers.tsj"
         }],
  "tilewidth":32,
  "type":"map",
  "version":"1.10",
- "width":8
+ "width":3
 }

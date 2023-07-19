@@ -31,7 +31,7 @@ namespace Assets.Scripts.Overlap
                 var tile = ChangedTiles.DeleteMin();
                 if (!tile.Collapsed)
                 {
-                    tile.Collapse(ColorMap, removals);
+                    tile.Collapse(ColorMap, FrequencyMap, removals);
                     PropagateEnablers(map, rules, removals);
                 }
             }
@@ -56,7 +56,8 @@ namespace Assets.Scripts.Overlap
                             var oppositeDirection = OppositeDirection(i);
                             if (enablerCount.ByDirection[oppositeDirection] == 1)
                             {
-                                if (!enablerCount.ByDirection.Any(x => x == 0))
+                                bool hasZeroInAnyDirection = CheckZeroEnablers(enablerCount);
+                                if (!hasZeroInAnyDirection)
                                 {
                                     neighbor.RemovePossibleTile(tileIdx, removals, FrequencyMap);
                                     if (neighbor.LegalTilesCount == 1 && !neighbor.Collapsed)
@@ -75,7 +76,8 @@ namespace Assets.Scripts.Overlap
                                     }
 
                                 }
-                            }else if(enablerCount.ByDirection[oppositeDirection] == 0)
+                            }
+                            else if(enablerCount.ByDirection[oppositeDirection] == 0)
                             {
                                 continue;
                             }
@@ -90,6 +92,18 @@ namespace Assets.Scripts.Overlap
                     }
                 }
             }
+        }
+
+        private static bool CheckZeroEnablers(EnablerCount enablerCount)
+        {
+            for (int d = 0; d < enablerCount.ByDirection.Length; d++)
+            {
+                if (enablerCount.ByDirection[d] == 0)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private int OppositeDirection(int i)
