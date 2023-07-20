@@ -25,7 +25,7 @@ namespace Assets.Scripts.Overlap
         public abstract void UpdateEntropy();
         public abstract void Collapse(string[] colorMap, int[] frequencyMap, Stack<TileRemoval> removals);
         public abstract void RemovePossibleTile(int tileIdx, Stack<TileRemoval> removals, int[] frequencies);
-        public abstract void InitializeEntropy(int[] frequencies);
+        public abstract void InitializeEntropy(float initialEntropy);
 
         public int CompareTo(Tile other)
         {

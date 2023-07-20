@@ -49,13 +49,9 @@ namespace Assets.Scripts.Overlap
             SelectedTile = colorMap[selectedTile];
         }
 
-        public override void InitializeEntropy(int[] frequencies)
+        public override void InitializeEntropy(float initialEntropy)
         {
-            var totalWeight = LegalTiles.Select((item, idx) => (item, idx)).Where(x => x.item).Select(x => frequencies[x.idx]).Sum();
-            sumOfPossibleTileWeights = totalWeight;
-            var sumOfWeightLogWeight = LegalTiles.Select((item, idx) => (item, idx)).Where(x => x.item).Select(x => frequencies[x.idx] * Mathf.Log(frequencies[x.idx], 2)).Sum();
-            sumOfPossibleTileWeightsLog = sumOfWeightLogWeight;
-            Entropy = Mathf.Log(totalWeight, 2) - (sumOfWeightLogWeight / totalWeight) + EntropyNoise;
+            Entropy = initialEntropy + EntropyNoise;
         }
 
         public override void RemovePossibleTile(int tileIdx, Stack<TileRemoval> removals, int[] frequencies)

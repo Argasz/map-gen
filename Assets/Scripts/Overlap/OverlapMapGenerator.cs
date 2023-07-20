@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace Assets.Scripts.Overlap
 {
@@ -24,8 +26,11 @@ namespace Assets.Scripts.Overlap
             ColorMap = new string[rules.Length];
             var map = new List<List<SquareTile>>(new List<SquareTile>[dimx]);
             ChangedTiles = new IntervalHeap<SquareTile>();
+            Profiler.BeginSample("Initialize");
             Initialize(rules, dimx, dimy, map);
+            Profiler.EndSample();
             var removals = new Stack<TileRemoval>();
+            Profiler.BeginSample("Generate");
             while (ChangedTiles.Count > 0)
             {
                 var tile = ChangedTiles.DeleteMin();
@@ -35,6 +40,7 @@ namespace Assets.Scripts.Overlap
                     PropagateEnablers(map, rules, removals);
                 }
             }
+            Profiler.EndSample();
             return map;
         }
 
@@ -165,6 +171,8 @@ namespace Assets.Scripts.Overlap
         private void Initialize(SquareTileRule[] rules, int dimx, int dimy, List<List<SquareTile>> map)
         {
             var initialEnablerCounts = new EnablerCount[rules.Length];
+            var initialSumOfPossibleTileWeights = 0;
+            var initialSumOfPossibleTileWeightsLog = 0.0f;
             foreach (var rule in rules)
             {
                 FrequencyMap[rule.tileIdx] = rule.frequency;
@@ -178,7 +186,11 @@ namespace Assets.Scripts.Overlap
                     enablerCount.ByDirection[i] = count;
                 }
                 initialEnablerCounts[rule.tileIdx] = enablerCount;
+
+                initialSumOfPossibleTileWeights += rule.frequency;
+                initialSumOfPossibleTileWeightsLog += rule.frequency * Mathf.Log(rule.frequency, 2);
             }
+            var initialEntropy = Mathf.Log(initialSumOfPossibleTileWeights, 2) - (initialSumOfPossibleTileWeightsLog / initialSumOfPossibleTileWeights);
 
             for (int x = 0; x < dimx; x++)
             {
@@ -197,7 +209,7 @@ namespace Assets.Scripts.Overlap
                     {
                         tile.LegalTiles[i] = true;
                     }
-                    tile.InitializeEntropy(FrequencyMap);
+                    tile.InitializeEntropy(initialEntropy);
                     if (y > 0)
                     {
                         var northTile = map[x][y - 1];

@@ -66,8 +66,6 @@ public class BoardManager : MonoBehaviour
         boardHolder = new GameObject("Board").transform;
 
         var retries = 10;
-
-        Profiler.BeginSample("MapGen");
         
         var stopwatch = new Stopwatch();
         stopwatch.Start();
@@ -112,7 +110,6 @@ public class BoardManager : MonoBehaviour
             }
 
         }
-        Profiler.EndSample();
     }
 
     Vector3 RandomPosition()
