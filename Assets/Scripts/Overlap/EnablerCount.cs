@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Scripts.Overlap
 {
-    public class EnablerCount
+    public struct EnablerCount
     {
         public EnablerCount(int numberOfDirections)
         {

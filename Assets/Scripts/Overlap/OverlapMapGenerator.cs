@@ -69,7 +69,14 @@ namespace Assets.Scripts.Overlap
                                     if (neighbor.LegalTilesCount == 1 && !neighbor.Collapsed)
                                     {
                                         neighbor.Collapsed = true;
-                                        var selectedTileIdx = neighbor.LegalTiles.Select((item, idx) => (item, idx)).First(x => x.item).idx;
+                                        var selectedTileIdx = -1;
+                                        for(int k = 0; k < neighbor.LegalTiles.Length; k++)
+                                        {
+                                            if(neighbor.LegalTiles[k] == true)
+                                            {
+                                                selectedTileIdx = k;
+                                            }
+                                        }
                                         neighbor.SelectedTile = ColorMap[selectedTileIdx];
                                     }
                                     else if (neighbor.LegalTilesCount == 0)
@@ -117,57 +124,6 @@ namespace Assets.Scripts.Overlap
             return (i + 2) % 4;
         }
 
-
-/*        private void Propagate(Dictionary<int, SquareTileRule> rules, SquareTile tile)
-        {
-            var toUpdate = new Stack<Tile>(tile.AdjacentTiles.Where(x => x != null && !x.Collapsed));
-            while (toUpdate.Count > 0)
-            {
-                tile = (SquareTile)toUpdate.Pop();
-                var westTile = tile.AdjacentTiles.ElementAtOrDefault((int)CardinalDirection.WEST);
-                var northTile = tile.AdjacentTiles.ElementAtOrDefault((int)CardinalDirection.NORTH);
-                var eastTile = tile.AdjacentTiles.ElementAtOrDefault((int)CardinalDirection.EAST);
-                var southTile = tile.AdjacentTiles.ElementAtOrDefault((int)CardinalDirection.SOUTH);
-                var removed = tile.LegalTiles.RemoveAll(x =>
-                {
-                    var thisRule = rules[x];
-                    var westCompatible = westTile == null || thisRule.WestPermitted.Overlaps(westTile.LegalTiles);
-                    var northCompatible = northTile == null || thisRule.NorthPermitted.Overlaps(northTile.LegalTiles);
-                    var eastCompatible = eastTile == null || thisRule.EastPermitted.Overlaps(eastTile.LegalTiles);
-                    var southCompatible = southTile == null || thisRule.SouthPermitted.Overlaps(southTile.LegalTiles);
-
-                    var isCompatible = westCompatible && northCompatible && eastCompatible && southCompatible;
-
-                    return !isCompatible;
-                });
-
-                if (removed > 0)
-                {
-                    if (tile.LegalTiles.Count == 1)
-                    {
-                        tile.Collapsed = true;
-                        tile.SelectedTile = ColorMap[tile.LegalTiles.First()];
-                    }
-                    else if (tile.LegalTiles.Count == 0)
-                    {
-                        throw new Exception("Impossible to solve based on sample."); // Maybe add backtracking
-                    }
-                    else
-                    {
-                        tile.UpdateEntropy(FrequencyMap);
-                        ChangedTiles.Add(tile);
-                    }
-                    foreach (var adj in tile.AdjacentTiles)
-                    {
-                        if (adj != null && !adj.Collapsed)
-                        {
-                            toUpdate.Push(adj);
-                        }
-                    }
-                }
-            }
-        }*/
-
         private void Initialize(SquareTileRule[] rules, int dimx, int dimy, List<List<SquareTile>> map)
         {
             var initialEnablerCounts = new EnablerCount[rules.Length];
@@ -200,16 +156,22 @@ namespace Assets.Scripts.Overlap
                     var tile = new SquareTile(rules.Length);
                     tile.coordX = x;
                     tile.coordY = y;
-                    tile.enablerCounts = initialEnablerCounts.Select(x => {
+                    var enablerCounts = new EnablerCount[initialEnablerCounts.Length];
+                    for(int i = 0; i < initialEnablerCounts.Length; i++)
+                    {
                         var theCount = new EnablerCount(4);
-                        x.ByDirection.CopyTo(theCount.ByDirection, 0);
-                        return theCount;
-                        }).ToArray();
+                        initialEnablerCounts[i].ByDirection.CopyTo(theCount.ByDirection, 0);
+                        enablerCounts[i] = theCount;
+                    }
+                    tile.enablerCounts = enablerCounts;
+
                     for(int i = 0; i < rules.Length; i++)
                     {
                         tile.LegalTiles[i] = true;
                     }
-                    tile.InitializeEntropy(initialEntropy);
+
+                    tile.InitializeEntropy(initialEntropy, initialSumOfPossibleTileWeights, initialSumOfPossibleTileWeightsLog);
+
                     if (y > 0)
                     {
                         var northTile = map[x][y - 1];

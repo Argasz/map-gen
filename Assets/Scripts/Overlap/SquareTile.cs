@@ -49,9 +49,11 @@ namespace Assets.Scripts.Overlap
             SelectedTile = colorMap[selectedTile];
         }
 
-        public override void InitializeEntropy(float initialEntropy)
+        public override void InitializeEntropy(float initialEntropy, int initialSumOfPossibleTileWeights, float initialSumOfPossibleTileWeightsLog)
         {
             Entropy = initialEntropy + EntropyNoise;
+            sumOfPossibleTileWeights = initialSumOfPossibleTileWeights;
+            sumOfPossibleTileWeightsLog = initialSumOfPossibleTileWeightsLog;
         }
 
         public override void RemovePossibleTile(int tileIdx, Stack<TileRemoval> removals, int[] frequencies)
